@@ -22,49 +22,58 @@ app.use(passport.initialize());
 exports.addProduct=(req,res)=>{
     let newProduct=new Product({
         Product_Name:req.body.product_name,
-        Category_Id:req.body.category_id,
+        Product_Company:req.body.product_company,
         Subcategory_Id:req.body.subcategory_id,
         Product_Price:req.body.product_price,
         Product_Stock:req.body.product_stock,
         Product_Description:req.body.product_description,
-        Product_Image:req.body.product_Image,
+        Product_Image:req.body.image,
     });
-    newProduct.save().then(product=>res.send(product)).catch(e=>next(e));
+    newProduct.save().then(product=>res.send(product)).catch(e=>console.log(e));
 };
 
 exports.getProduct=(req,res)=> {
-    var category=req.param.categoryid;
-    console.log(category);
-    Product.find({Category_id:category}).then(product => {
-        /*var data={};
-        product.forEach(a=>{
-            data={
-                Product_Name:a.Product_Name,
-                Product_Image:a.Product_Image
-            }
-        });*/
-        res.json(product)
-    }).catch(e => console.log(e));
+    if(req.query.categoryId){
+        console.log("category");
+        Product.find({Category_Id:req.query.categoryId}).then(product => {
+            res.json(product)
+        }).catch(e => console.log(e));
+    }else if(req.query.subcategoryId){
+        console.log("subcategoryId"+req.query.subcategoryId);
+        Product.find({Subcategory_Id:req.query.subcategoryId}).then(product => {
+            console.log(product);
+            res.json(product)
+        }).catch(e => console.log(e));
+    }else{
+        Product.find().then(product => {
+            res.json(product)
+        }).catch(e => console.log(e));
+    }
 }
-
 
 exports.addSubcategory=(req,res)=>{
     let newSubcategory=new Subcategory({
         Subcategory_Name:req.body.subcategory_name,
         Subcategory_Description:req.body.subcategory_description,
+        Subcategory_Image:req.body.image,
         Category_Id:req.body.category_id
     });
     newSubcategory.save().then(subcategory=>res.send(subcategory)).catch(e=>next(e));
 };
 
 exports.getSubcategory=(req,res)=>{
-    Subcategory.find().then(subcategory=>res.send(subcategory)).catch(e=>next(e));
+    if(req.query.categoryId) {
+        Subcategory.find({Category_Id:req.query.categoryId}).then(subcategory => res.send(subcategory)).catch(e => next(e));
+    }else{
+        Subcategory.find().then(subcategory => res.send(subcategory)).catch(e => next(e));
+    }
 }
 
 exports.addCategory=(req,res)=>{
     let newCategory=new Category({
         Category_Name:req.body.category_name,
         Category_Description:req.body.category_description,
+        Category_Image:req.body.image
     });
     newCategory.save().then(category=>res.send(category)).catch(e=>next(e));
 };

@@ -12,12 +12,6 @@ const Product=new Schema({
         type:String,
         trim:true
     },
-    Category_Id:{
-        type: Schema.Types.ObjectId,
-        ref: 'Category',
-        required:true
-
-    },
     Subcategory_Id:{
         type: Schema.Types.ObjectId,
         ref: 'Subcategory',
