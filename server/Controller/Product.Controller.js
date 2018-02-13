@@ -11,7 +11,7 @@ const GoogleStrategy=require('passport-google-oauth').OAuth2Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const {mongoose,port}=require('../../config/config');
 
-
+var sortKey = 'timestamp';
 
 let app=express();
 app.use(bodyParser.json());
@@ -44,7 +44,13 @@ exports.getProduct=(req,res)=> {
             console.log(product);
             res.json(product)
         }).catch(e => console.log(e));
-    }else{
+    }else if(req.query.limit){
+        console.log("Start"+req.query.limit+"Skip"+req.query.skip);
+        Product.find().limit(parseInt(req.query.limit)).then(product => {
+            console.log(product);
+            res.json(product)
+        }).catch(e => console.log(e));
+    }else {
         Product.find().then(product => {
             res.json(product)
         }).catch(e => console.log(e));

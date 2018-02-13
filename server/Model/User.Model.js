@@ -18,31 +18,32 @@ const User=new mongoose.Schema({
     UserId:{
         type:String,
         trim:true,
+    },
+    Photo:{
+        type:String,
+        trim:true
+    },
+    Token:{
+        type:String
     }
 });
-
 
 User.methods.generateAuthToken=function(){
     user=this;
     let token=user._id.toHexString();
     let data=jwt.sign(token,"abc");
-    user.UserId=data;
+    user.Token=data;
     return user.save().then(()=>{
         return data;
     }).catch((e)=>res.send(e));
 }
 User.pre('save',function (next) {
     user=this;
+    console.log(user);
     bcrypt.genSalt(10,function (err,salt) {
-        console.log(user.Password)
         bcrypt.hash(user.Password,salt,function (err,hash) {
-            console.log(hash)
-            bcrypt.compare(user.Password,hash,(err,res)=>{
-                console.log(res)
-                if(res){
-                user.Password=hash;
-                next();}
-            })
+            user.Password=hash;
+            console.log(user.Password);
             next();
         });
     });
