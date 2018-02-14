@@ -55,6 +55,8 @@ passport.use(new GoogleStrategy({
                     return done(null, newUser);
                 });
             }else{
+                data=accessToken;
+                User.update({_id: user._id }, { $set: { Token: data }}).then((res)=>console.log(res));
                 return done(null, user);
             }
         });
@@ -85,6 +87,8 @@ passport.use(new FacebookStrategy(
                     return done(null, newUser);
                 });
             }else{
+                data=accessToken;
+                User.update({_id: user._id }, { $set: { Token: data }}).then((res)=>console.log(res));
                 return done(null, user);
             }
         });
@@ -113,6 +117,8 @@ passport.use(new TwitterStrategy({
                     return done(null, newUser);
                 });
             }else{
+                data=accessToken;
+                User.update({_id: user._id }, { $set: { Token: data }}).then((res)=>console.log(res));
                 return done(null, user);
             }
         });
@@ -144,6 +150,8 @@ passport.use(new GithubStrategy({
                     return done(null, newUser);
                 });
             }else{
+                data=accessToken;
+                User.update({_id: user._id }, { $set: { Token: data }}).then((res)=>console.log(res));
                 return done(null, user);
             }
         });
@@ -225,7 +233,7 @@ app.get('/auth/github/callback',passport.authenticate('github', {
 }));
 
 app.get('/logout',(req,res)=>{
-
+    User.update({Token: req.query.Token }, { $set: { Token: '' }}).then(()=>res.json("Logout Successfully"));
 });
 
 productRoute.route(app);
